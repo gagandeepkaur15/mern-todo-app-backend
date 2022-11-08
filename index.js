@@ -1,10 +1,12 @@
 const mongoose = require('mongoose');
 const express = require('express');
 const Todo = require("./models/TodoModel");
+const cors = require('cors');
 
 const app=express();
 const port = 3000
 app.use(express.json());
+app.use(cors());
 
 main().catch(err => console.log(err));
 
@@ -21,6 +23,7 @@ db.once('open',function(){
 
 app.get('/fetchTodo', async (req, res) => {
     const todos = await Todo.find;
+    res.send("API is running");
     res.json(todos);
 })
 
@@ -32,6 +35,14 @@ app.post('/addTodo', (req, res) => {
     }).catch(()=>{
         res.status(400).send("Items not saved")
     });
+})
+
+app.delete('/deletei/:id', async (req,res)=>{
+    console.log(req.params.id);
+    const finalTodo = await Todo.findByIdAndDelete(req.params.id);
+    
+
+    res.json(finalTodo);
 })
   
 app.listen(port, () => {
